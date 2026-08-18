@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // कोणीही (login केलेला) सगळ्या listings बघू शकतो,
+    // पण फक्त स्वतःच्या listings edit/delete करू शकतो
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if request.auth != null
+                    && resource.data.sellerId == request.auth.uid;
+    }
+  }
+}
