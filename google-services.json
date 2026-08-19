@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "493558942096",
+    "project_id": "sellmyapp-6958a",
+    "storage_bucket": "sellmyapp-6958a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493558942096:android:a5e7a37679f05cf3d28b15",
+        "android_client_info": {
+          "package_name": "com.sellmyapp.sellmyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYLVqAfZwClSpK2IuybjGbJN-NKnmEOd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
