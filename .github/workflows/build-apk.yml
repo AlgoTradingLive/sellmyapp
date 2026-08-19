@@ -100,12 +100,14 @@ jobs:
             } > android/key.properties
             # Wire signingConfig into app/build.gradle(.kts)
             if [ -f android/app/build.gradle.kts ]; then
+              # Imports must be at the very top of the file, before plugins{} etc.
+              sed -i '1i import java.util.Properties\nimport java.io.FileInputStream' android/app/build.gradle.kts
               {
                 echo ''
                 echo 'val keystorePropertiesFile = rootProject.file("key.properties")'
-                echo 'val keystoreProperties = java.util.Properties()'
+                echo 'val keystoreProperties = Properties()'
                 echo 'if (keystorePropertiesFile.exists()) {'
-                echo '    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))'
+                echo '    keystoreProperties.load(FileInputStream(keystorePropertiesFile))'
                 echo '}'
                 echo ''
                 echo 'android {'
