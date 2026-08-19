@@ -18,6 +18,15 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup fresh Android SDK (avoids corrupted pre-installed platform)
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 16 (API 36) platform + build-tools
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" || \
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -35,30 +44,21 @@ jobs:
           sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "1.9.24"/' android/settings.gradle || true
           sed -i "s/ext.kotlin_version = '[^']*'/ext.kotlin_version = '1.9.24'/" android/build.gradle || true
 
-      - name: Pin compileSdk/targetSdk to 34 (android-35 jar broken on runner)
+      - name: Pin compileSdk/targetSdk to 36 (Play Store requires API 36 from Aug 31, 2026)
         run: |
           # Kotlin DSL (build.gradle.kts) - Flutter 3.24+ default
           if [ -f android/app/build.gradle.kts ]; then
-            sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*flutter\.compileSdkVersion/compileSdk = 34/' android/app/build.gradle.kts
-            sed -i -E 's/targetSdk[[:space:]]*=[[:space:]]*flutter\.targetSdkVersion/targetSdk = 34/' android/app/build.gradle.kts
+            sed -i -E 's/compileSdk[[:space:]]*=[[:space:]]*flutter\.compileSdkVersion/compileSdk = 36/' android/app/build.gradle.kts
+            sed -i -E 's/targetSdk[[:space:]]*=[[:space:]]*flutter\.targetSdkVersion/targetSdk = 36/' android/app/build.gradle.kts
           fi
           # Groovy (build.gradle) - older template
           if [ -f android/app/build.gradle ]; then
-            sed -i -E 's/compileSdkVersion[[:space:]]+flutter\.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
-            sed -i -E 's/targetSdkVersion[[:space:]]+flutter\.targetSdkVersion/targetSdkVersion 34/' android/app/build.gradle
+            sed -i -E 's/compileSdkVersion[[:space:]]+flutter\.compileSdkVersion/compileSdkVersion 36/' android/app/build.gradle
+            sed -i -E 's/targetSdkVersion[[:space:]]+flutter\.targetSdkVersion/targetSdkVersion 36/' android/app/build.gradle
           fi
           echo "----- Verifying compileSdk/targetSdk lines -----"
           grep -n "compileSdk\|targetSdk" android/app/build.gradle.kts 2>/dev/null || true
           grep -n "compileSdkVersion\|targetSdkVersion" android/app/build.gradle 2>/dev/null || true
-
-      - name: Remove any broken android-35 platform on runner (fallback safety)
-        run: |
-          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/platforms/android-35" ]; then
-            sudo rm -rf "$ANDROID_HOME/platforms/android-35" || true
-          fi
-          if [ -n "$ANDROID_SDK_ROOT" ] && [ -d "$ANDROID_SDK_ROOT/platforms/android-35" ]; then
-            sudo rm -rf "$ANDROID_SDK_ROOT/platforms/android-35" || true
-          fi
 
       - name: Create empty assets folder (referenced in pubspec.yaml)
         run: mkdir -p assets
