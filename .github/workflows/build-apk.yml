@@ -73,6 +73,8 @@ jobs:
           else
             echo "No google-services.json in repo yet — Firebase will not initialize on this build."
           fi
+
+      - name: Force compileSdk/targetSdk = 36 globally (applies to app AND all plugins)
         run: |
           {
             echo "flutter.compileSdkVersion=36"
