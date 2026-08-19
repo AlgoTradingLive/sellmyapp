@@ -100,7 +100,7 @@ jobs:
             echo "Keystore verified OK."
             {
               echo "storePassword=$KEYSTORE_PASSWORD"
-              echo "keyPassword=$KEY_PASSWORD"
+              echo "keyPassword=$KEYSTORE_PASSWORD"
               echo "keyAlias=$KEY_ALIAS"
               echo "storeFile=release.keystore"
             } > android/key.properties
