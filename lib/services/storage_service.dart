@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 class StorageService {
   // TODO: fill these in after creating your free Cloudinary account
   // (see README section "Cloudinary Setup")
-  static const String cloudName = 'YOUR_CLOUD_NAME';
-  static const String uploadPreset = 'YOUR_UNSIGNED_UPLOAD_PRESET';
+  static const String cloudName = 'pujd9fpw';
+  static const String uploadPreset = 'Sellmyapp';
 
   // Upload a list of image files for a listing and return their URLs
   Future<List<String>> uploadListingImages(
