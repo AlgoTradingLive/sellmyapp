@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/app_listing.dart';
 import '../services/listing_service.dart';
+import '../services/storage_service.dart';
 import '../services/auth_service.dart';
 
 class AddListingScreen extends StatefulWidget {
@@ -24,35 +27,64 @@ class _AddListingScreenState extends State<AddListingScreen> {
   String _category = 'Utility';
   String _platform = 'Android';
   bool _saving = false;
+  final List<File> _selectedImages = [];
 
   final _categories = const [
     'Gaming', 'Utility', 'E-commerce', 'Social', 'Education', 'Finance', 'Other'
   ];
 
+  Future<void> _pickImages() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickMultiImage(imageQuality: 80);
+    if (picked.isEmpty) return;
+    setState(() {
+      _selectedImages.addAll(picked.map((x) => File(x.path)));
+      // Keep at most 5 screenshots per listing
+      if (_selectedImages.length > 5) {
+        _selectedImages.removeRange(5, _selectedImages.length);
+      }
+    });
+  }
+
+  void _removeImage(int index) {
+    setState(() => _selectedImages.removeAt(index));
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final user = AuthService().currentUser;
-    final listing = AppListing(
-      id: '',
-      title: _title.text.trim(),
-      category: _category,
-      platform: _platform,
-      description: _description.text.trim(),
-      price: double.tryParse(_price.text.trim()) ?? 0,
-      storeLink: _storeLink.text.trim().isEmpty ? null : _storeLink.text.trim(),
-      monthlyDownloads: int.tryParse(_downloads.text.trim()),
-      monthlyRevenue: double.tryParse(_revenue.text.trim()),
-      techStack: _techStack.text.trim(),
-      screenshotUrls: const [], // image upload will be added in phase 2
-      sellerId: user?.uid ?? '',
-      sellerContact: _contact.text.trim(),
-      createdAt: DateTime.now(),
-    );
-    await ListingService().addListing(listing);
-    if (mounted) {
-      setState(() => _saving = false);
-      Navigator.pop(context);
+    List<String> imageUrls = [];
+    try {
+      if (_selectedImages.isNotEmpty) {
+        imageUrls = await StorageService()
+            .uploadListingImages(user?.uid ?? 'unknown', _selectedImages);
+      }
+      final listing = AppListing(
+        id: '',
+        title: _title.text.trim(),
+        category: _category,
+        platform: _platform,
+        description: _description.text.trim(),
+        price: double.tryParse(_price.text.trim()) ?? 0,
+        storeLink: _storeLink.text.trim().isEmpty ? null : _storeLink.text.trim(),
+        monthlyDownloads: int.tryParse(_downloads.text.trim()),
+        monthlyRevenue: double.tryParse(_revenue.text.trim()),
+        techStack: _techStack.text.trim(),
+        screenshotUrls: imageUrls,
+        sellerId: user?.uid ?? '',
+        sellerContact: _contact.text.trim(),
+        createdAt: DateTime.now(),
+      );
+      await ListingService().addListing(listing);
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Failed to save: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -65,6 +97,57 @@ class _AddListingScreenState extends State<AddListingScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            const Text('Screenshots (up to 5)', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 90,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  ..._selectedImages.asMap().entries.map((entry) {
+                    final i = entry.key;
+                    final file = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(file, width: 90, height: 90, fit: BoxFit.cover),
+                          ),
+                          Positioned(
+                            top: 2,
+                            right: 2,
+                            child: GestureDetector(
+                              onTap: () => _removeImage(i),
+                              child: const CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.black54,
+                                child: Icon(Icons.close, size: 14, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  if (_selectedImages.length < 5)
+                    InkWell(
+                      onTap: _pickImages,
+                      child: Container(
+                        width: 90,
+                        height: 90,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.add_a_photo_outlined, color: Colors.grey),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _title,
               decoration: const InputDecoration(labelText: 'App Name', border: OutlineInputBorder()),

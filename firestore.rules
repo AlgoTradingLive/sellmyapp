@@ -2,8 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // कोणीही (login केलेला) सगळ्या listings बघू शकतो,
-    // पण फक्त स्वतःच्या listings edit/delete करू शकतो
+    // Anyone (logged in) can read all listings,
+    // but can only edit/delete their own listings
     match /listings/{listingId} {
       allow read: if true;
       allow create: if request.auth != null

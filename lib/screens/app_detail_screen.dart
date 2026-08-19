@@ -22,6 +22,36 @@ class AppDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (listing.screenshotUrls.isNotEmpty)
+              SizedBox(
+                height: 220,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: listing.screenshotUrls.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) => ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      listing.screenshotUrls[i],
+                      width: 160,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, progress) =>
+                          progress == null
+                              ? child
+                              : const SizedBox(
+                                  width: 160,
+                                  child: Center(child: CircularProgressIndicator()),
+                                ),
+                      errorBuilder: (context, error, stack) => Container(
+                        width: 160,
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.broken_image, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (listing.screenshotUrls.isNotEmpty) const SizedBox(height: 16),
             Row(
               children: [
                 Chip(label: Text(listing.category)),
