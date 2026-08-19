@@ -91,7 +91,13 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
+            echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d -i > android/app/release.keystore
+            echo "Keystore file size: $(wc -c < android/app/release.keystore) bytes"
+            if ! keytool -list -keystore android/app/release.keystore -storepass "$KEYSTORE_PASSWORD" > /dev/null 2>&1; then
+              echo "ERROR: Keystore could not be read after decoding — KEYSTORE_BASE64 secret is likely corrupted (extra whitespace/newlines from copy-paste). Re-copy it carefully and update the secret."
+              exit 1
+            fi
+            echo "Keystore verified OK."
             {
               echo "storePassword=$KEYSTORE_PASSWORD"
               echo "keyPassword=$KEY_PASSWORD"
