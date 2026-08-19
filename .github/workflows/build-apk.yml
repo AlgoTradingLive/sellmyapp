@@ -83,6 +83,55 @@ jobs:
           echo "----- android/local.properties -----"
           cat android/local.properties
 
+      - name: Set up release signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
+            {
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyPassword=$KEY_PASSWORD"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "storeFile=release.keystore"
+            } > android/key.properties
+            # Wire signingConfig into app/build.gradle(.kts)
+            if [ -f android/app/build.gradle.kts ]; then
+              {
+                echo ''
+                echo 'val keystorePropertiesFile = rootProject.file("key.properties")'
+                echo 'val keystoreProperties = java.util.Properties()'
+                echo 'if (keystorePropertiesFile.exists()) {'
+                echo '    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))'
+                echo '}'
+                echo ''
+                echo 'android {'
+                echo '    signingConfigs {'
+                echo '        create("release") {'
+                echo '            if (keystorePropertiesFile.exists()) {'
+                echo '                keyAlias = keystoreProperties["keyAlias"] as String'
+                echo '                keyPassword = keystoreProperties["keyPassword"] as String'
+                echo '                storeFile = file(keystoreProperties["storeFile"] as String)'
+                echo '                storePassword = keystoreProperties["storePassword"] as String'
+                echo '            }'
+                echo '        }'
+                echo '    }'
+                echo '    buildTypes {'
+                echo '        release {'
+                echo '            signingConfig = signingConfigs.getByName("release")'
+                echo '        }'
+                echo '    }'
+                echo '}'
+              } >> android/app/build.gradle.kts
+            fi
+            echo "Release signing configured."
+          else
+            echo "No KEYSTORE_BASE64 secret found — build will use default debug signing (SHA-1 will keep changing, Google Sign-In and Play Store uploads will break)."
+          fi
+
       - name: Create empty assets folder (referenced in pubspec.yaml)
         run: mkdir -p assets
 
