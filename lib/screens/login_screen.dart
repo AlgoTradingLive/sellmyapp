@@ -34,6 +34,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _submitGoogle() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await _auth.signInWithGoogle();
+      // null result means user cancelled the picker — no error needed
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,6 +106,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(_isSignUp
                       ? 'आधीच account आहे? Login करा'
                       : 'नवीन आहात? Sign Up करा'),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    children: [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('किंवा', style: TextStyle(color: Colors.grey)),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _loading ? null : _submitGoogle,
+                    icon: const Icon(Icons.g_mobiledata, size: 28),
+                    label: const Text('Google ने सुरू करा'),
+                  ),
                 ),
               ],
             ),
