@@ -60,7 +60,7 @@ class AppDetailScreen extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: () => _launch(listing.storeLink!),
                 icon: const Icon(Icons.store),
-                label: const Text('Play Store / App Store वर बघा'),
+                label: const Text('View on Play Store / App Store'),
               ),
             const SizedBox(height: 24),
             SizedBox(
@@ -68,7 +68,7 @@ class AppDetailScreen extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: () => _launch('https://wa.me/${listing.sellerContact}'),
                 icon: const Icon(Icons.chat),
-                label: const Text('Seller ला WhatsApp वर संपर्क करा'),
+                label: const Text('Contact Seller on WhatsApp'),
               ),
             ),
           ],

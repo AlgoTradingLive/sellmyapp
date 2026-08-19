@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.list_alt),
-            tooltip: 'माझे listings',
+            tooltip: 'My listings',
             onPressed: () => Navigator.push(context,
                 MaterialPageRoute(builder: (_) => const MyListingsScreen())),
           ),
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const AddListingScreen())),
         icon: const Icon(Icons.add),
-        label: const Text('App विका'),
+        label: const Text('Sell App'),
       ),
       body: Column(
         children: [
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('अजून कोणतीही listing नाही'));
+                  return const Center(child: Text('No listings yet'));
                 }
                 final listings = snapshot.data!;
                 return ListView.builder(

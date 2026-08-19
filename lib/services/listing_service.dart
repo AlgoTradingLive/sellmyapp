@@ -5,7 +5,7 @@ class ListingService {
   final CollectionReference _listings =
       FirebaseFirestore.instance.collection('listings');
 
-  // सगळे listings मिळवणे (नवीन आधी)
+  // Get all listings (newest first)
   Stream<List<AppListing>> getListings({String? category}) {
     Query query = _listings.orderBy('createdAt', descending: true);
     if (category != null && category != 'All') {
@@ -17,7 +17,7 @@ class ListingService {
         .toList());
   }
 
-  // एका seller चे listings मिळवणे
+  // Get a seller's listings
   Stream<List<AppListing>> getMyListings(String sellerId) {
     return _listings
         .where('sellerId', isEqualTo: sellerId)
@@ -29,17 +29,17 @@ class ListingService {
             .toList());
   }
 
-  // नवीन listing add करणे
+  // Add a new listing
   Future<void> addListing(AppListing listing) async {
     await _listings.add(listing.toMap());
   }
 
-  // listing update करणे
+  // Update a listing
   Future<void> updateListing(String id, Map<String, dynamic> data) async {
     await _listings.doc(id).update(data);
   }
 
-  // listing delete करणे
+  // Delete a listing
   Future<void> deleteListing(String id) async {
     await _listings.doc(id).delete();
   }

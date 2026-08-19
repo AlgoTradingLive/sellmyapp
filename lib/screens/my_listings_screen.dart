@@ -11,7 +11,7 @@ class MyListingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final uid = AuthService().currentUser?.uid ?? '';
     return Scaffold(
-      appBar: AppBar(title: const Text('माझे Listings')),
+      appBar: AppBar(title: const Text('My Listings')),
       body: StreamBuilder<List<AppListing>>(
         stream: ListingService().getMyListings(uid),
         builder: (context, snapshot) {
@@ -19,7 +19,7 @@ class MyListingsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('तुम्ही अजून काहीही list केलेलं नाही'));
+            return const Center(child: Text("You haven't listed anything yet"));
           }
           final listings = snapshot.data!;
           return ListView.builder(

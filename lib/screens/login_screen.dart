@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 12),
                 const Text('SellMyApp',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                const Text('तयार apps विकत घ्या किंवा विका',
+                const Text('Buy or sell ready-made apps',
                     style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 32),
                 TextField(
@@ -104,8 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextButton(
                   onPressed: () => setState(() => _isSignUp = !_isSignUp),
                   child: Text(_isSignUp
-                      ? 'आधीच account आहे? Login करा'
-                      : 'नवीन आहात? Sign Up करा'),
+                      ? 'Already have an account? Login'
+                      : "New here? Sign Up"),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text('किंवा', style: TextStyle(color: Colors.grey)),
+                        child: Text('OR', style: TextStyle(color: Colors.grey)),
                       ),
                       Expanded(child: Divider()),
                     ],
@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: OutlinedButton.icon(
                     onPressed: _loading ? null : _submitGoogle,
                     icon: const Icon(Icons.g_mobiledata, size: 28),
-                    label: const Text('Google ने सुरू करा'),
+                    label: const Text('Continue with Google'),
                   ),
                 ),
               ],

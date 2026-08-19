@@ -44,7 +44,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
       monthlyDownloads: int.tryParse(_downloads.text.trim()),
       monthlyRevenue: double.tryParse(_revenue.text.trim()),
       techStack: _techStack.text.trim(),
-      screenshotUrls: const [], // टप्पा २ मध्ये image upload जोडायचं
+      screenshotUrls: const [], // image upload will be added in phase 2
       sellerId: user?.uid ?? '',
       sellerContact: _contact.text.trim(),
       createdAt: DateTime.now(),
@@ -59,7 +59,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('तुमचं App विका')),
+      appBar: AppBar(title: const Text('Sell Your App')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -67,8 +67,8 @@ class _AddListingScreenState extends State<AddListingScreen> {
           children: [
             TextFormField(
               controller: _title,
-              decoration: const InputDecoration(labelText: 'App चं नाव', border: OutlineInputBorder()),
-              validator: (v) => v == null || v.isEmpty ? 'गरजेचं आहे' : null,
+              decoration: const InputDecoration(labelText: 'App Name', border: OutlineInputBorder()),
+              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
@@ -91,14 +91,14 @@ class _AddListingScreenState extends State<AddListingScreen> {
               controller: _description,
               maxLines: 4,
               decoration: const InputDecoration(labelText: 'Description', border: OutlineInputBorder()),
-              validator: (v) => v == null || v.isEmpty ? 'गरजेचं आहे' : null,
+              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _price,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'किंमत (₹)', border: OutlineInputBorder()),
-              validator: (v) => v == null || v.isEmpty ? 'गरजेचं आहे' : null,
+              decoration: const InputDecoration(labelText: 'Price (₹)', border: OutlineInputBorder()),
+              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -110,7 +110,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
             TextFormField(
               controller: _techStack,
               decoration: const InputDecoration(
-                  labelText: 'Tech Stack (उदा. Flutter, Native)', border: OutlineInputBorder()),
+                  labelText: 'Tech Stack (e.g. Flutter, Native)', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 12),
             Row(
@@ -139,7 +139,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
               controller: _contact,
               decoration: const InputDecoration(
                   labelText: 'WhatsApp Number (91XXXXXXXXXX)', border: OutlineInputBorder()),
-              validator: (v) => v == null || v.isEmpty ? 'गरजेचं आहे' : null,
+              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 24),
             FilledButton(
@@ -147,7 +147,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
               child: _saving
                   ? const SizedBox(
                       height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Listing तयार करा'),
+                  : const Text('Create Listing'),
             ),
           ],
         ),
