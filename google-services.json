@@ -12,7 +12,20 @@
           "package_name": "com.sellmyapp.sellmyapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "493558942096-l3aq1ufaq0bmpd384tg0ijv53fco28fv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sellmyapp.sellmyapp",
+            "certificate_hash": "ac122106a7d5f56aecf33195401c3f988d0b356e"
+          }
+        },
+        {
+          "client_id": "493558942096-5e1em7filr1t70tnrdn6to2pj7fih801.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCYLVqAfZwClSpK2IuybjGbJN-NKnmEOd4"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493558942096-5e1em7filr1t70tnrdn6to2pj7fih801.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
