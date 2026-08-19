@@ -22,7 +22,7 @@
 3. Project तयार झाल्यावर:
    - **Authentication** → Sign-in method → "Email/Password" enable करा
    - **Firestore Database** → Create database → Production mode
-   - **Storage** → Get started (screenshot uploads साठी, टप्पा २ मध्ये लागेल)
+   - **Storage** → गरज नाही (आपण free Cloudinary वापरतो, खाली बघा)
 
 ### २. Firestore Security Rules लावा
 `firestore.rules` फाईल मधलं rules Firebase Console → Firestore → Rules मध्ये copy-paste करून Publish करा.
@@ -81,11 +81,27 @@ lib/
     my_listings_screen.dart → Seller च्या स्वतःच्या listings
 ```
 
+## Cloudinary Setup (Screenshot Upload — Free)
+
+App screenshots एका मोफत सेवेवर (Cloudinary) upload होतात — Firebase Storage ला paid
+plan लागतो म्हणून टाळलं.
+
+1. https://cloudinary.com/users/register/free इथे जाऊन मोफत account बनवा (card लागत नाही)
+2. Dashboard वर तुमचं **Cloud name** दिसेल — ते note करा
+3. Settings (⚙️) → Upload → खाली स्क्रोल करून **"Upload presets"** → **"Add upload preset"**
+   - Signing Mode: **Unsigned** करा (हे महत्त्वाचं आहे)
+   - Preset name द्या (उदा. `sellmyapp_unsigned`) आणि Save करा
+4. `lib/services/storage_service.dart` मध्ये वरचे 2 values भरा:
+   ```dart
+   static const String cloudName = 'तुमचं cloud name';
+   static const String uploadPreset = 'तुमचं preset name';
+   ```
+
 ## पुढचं काय करायचं (Next Steps)
 
 - [ ] Firebase project तयार करून जोडणे
-- [ ] Screenshot upload (Firebase Storage) जोडणे
+- [x] Screenshot upload (Cloudinary - free tier) जोडलं
 - [ ] App icon आणि splash screen
 - [ ] Play Store listing तयार करणे
-- [ ] Search/filter सुधारणे
+- [x] Search/filter सुधारणे
 - [ ] Seller verification badge system

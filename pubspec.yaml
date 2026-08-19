@@ -15,8 +15,10 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
   cloud_firestore: ^4.13.6
-  firebase_storage: ^11.5.6
   google_sign_in: ^6.2.1
+
+  # Image hosting (Cloudinary - free tier, no billing account needed)
+  http: ^1.2.0
 
   # UI / utils
   image_picker: ^1.0.4
