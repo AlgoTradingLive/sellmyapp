@@ -97,7 +97,28 @@ plan लागतो म्हणून टाळलं.
    static const String uploadPreset = 'तुमचं preset name';
    ```
 
-## पुढचं काय करायचं (Next Steps)
+## EmailJS Setup (Ownership Verification — Free)
+
+Seller च्या app च्या ownership verify करण्यासाठी त्याच्या Play Store developer
+email वर एक code पाठवला जातो — यासाठी EmailJS (मोफत, backend न लागता client
+मधून थेट email पाठवता येतो) वापरलंय.
+
+1. https://www.emailjs.com/ वर मोफत account बनवा (card लागत नाही)
+2. Dashboard → **Email Services** → **Add New Service** → Gmail (किंवा दुसरी सेवा) जोडा
+   → त्याचं **Service ID** note करा
+3. Dashboard → **Email Templates** → **Create New Template**. Template मध्ये
+   हे variables वापरा: `{{to_email}}`, `{{app_title}}`, `{{code}}`
+   (उदा. subject: "Verify ownership of {{app_title}}", body मध्ये code टाका)
+   → Save करून **Template ID** note करा
+4. Dashboard → **Account** → **General** → **Public Key** note करा
+5. `lib/services/verification_service.dart` मध्ये वरचे 3 values भरा:
+   ```dart
+   static const String emailJsServiceId = 'तुमचं service id';
+   static const String emailJsTemplateId = 'तुमचं template id';
+   static const String emailJsPublicKey = 'तुमची public key';
+   ```
+
+
 
 - [ ] Firebase project तयार करून जोडणे
 - [x] Screenshot upload (Cloudinary - free tier) जोडलं

@@ -57,6 +57,14 @@ class AppDetailScreen extends StatelessWidget {
                 Chip(label: Text(listing.category)),
                 const SizedBox(width: 8),
                 Chip(label: Text(listing.platform)),
+                if (listing.isVerified) ...[
+                  const SizedBox(width: 8),
+                  const Chip(
+                    avatar: Icon(Icons.verified, color: Colors.green, size: 18),
+                    label: Text('Verified', style: TextStyle(color: Colors.green)),
+                    backgroundColor: Color(0xFFE8F5E9),
+                  ),
+                ],
                 const SizedBox(width: 8),
                 Chip(label: Text(listing.techStack)),
               ],

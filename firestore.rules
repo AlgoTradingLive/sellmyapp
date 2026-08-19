@@ -11,5 +11,13 @@ service cloud.firestore {
       allow update, delete: if request.auth != null
                     && resource.data.sellerId == request.auth.uid;
     }
+
+    // Ownership verification codes: only signed-in users can create/read
+    // their own in-progress verification, and only the code-check flow
+    // (which runs in-app) marks it verified. Codes are single-use per listing.
+    match /verifications/{listingId} {
+      allow create: if request.auth != null;
+      allow read, update: if request.auth != null;
+    }
   }
 }

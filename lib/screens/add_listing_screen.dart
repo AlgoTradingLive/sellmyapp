@@ -5,6 +5,8 @@ import '../models/app_listing.dart';
 import '../services/listing_service.dart';
 import '../services/storage_service.dart';
 import '../services/auth_service.dart';
+import '../services/play_store_service.dart';
+import '../services/verification_service.dart';
 
 class AddListingScreen extends StatefulWidget {
   const AddListingScreen({super.key});
@@ -23,15 +25,93 @@ class _AddListingScreenState extends State<AddListingScreen> {
   final _contact = TextEditingController();
   final _downloads = TextEditingController();
   final _revenue = TextEditingController();
+  final _codeController = TextEditingController();
 
   String _category = 'Utility';
   String _platform = 'Android';
   bool _saving = false;
   final List<File> _selectedImages = [];
+  late final String _listingId;
+
+  // Ownership verification state
+  bool _verifying = false;
+  bool _isVerified = false;
+  String? _foundEmail; // masked email shown to seller
+  bool _codeSent = false;
+  String? _verifyError;
 
   final _categories = const [
     'Gaming', 'Utility', 'E-commerce', 'Social', 'Education', 'Finance', 'Other'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _listingId = ListingService().newListingId();
+  }
+
+  String _maskEmail(String email) {
+    final parts = email.split('@');
+    if (parts.length != 2) return email;
+    final name = parts[0];
+    final visible = name.length > 2 ? name.substring(0, 2) : name;
+    return '$visible***@${parts[1]}';
+  }
+
+  Future<void> _startVerification() async {
+    final link = _storeLink.text.trim();
+    if (link.isEmpty) {
+      setState(() => _verifyError = 'Enter your Play Store link first');
+      return;
+    }
+    setState(() {
+      _verifying = true;
+      _verifyError = null;
+    });
+    try {
+      final email = await PlayStoreService().fetchDeveloperEmail(link);
+      if (email == null) {
+        setState(() => _verifyError =
+            "Couldn't find a developer email on that Play Store page");
+        return;
+      }
+      final sent = await VerificationService().sendVerificationCode(
+        listingId: _listingId,
+        developerEmail: email,
+        appTitle: _title.text.trim().isEmpty ? 'your app' : _title.text.trim(),
+      );
+      if (!sent) {
+        setState(() => _verifyError = 'Failed to send verification email. Try again.');
+        return;
+      }
+      setState(() {
+        _foundEmail = email;
+        _codeSent = true;
+      });
+    } catch (e) {
+      setState(() => _verifyError = 'Verification failed: $e');
+    } finally {
+      if (mounted) setState(() => _verifying = false);
+    }
+  }
+
+  Future<void> _submitCode() async {
+    setState(() {
+      _verifying = true;
+      _verifyError = null;
+    });
+    try {
+      final ok = await VerificationService()
+          .checkCode(listingId: _listingId, enteredCode: _codeController.text);
+      if (ok) {
+        setState(() => _isVerified = true);
+      } else {
+        setState(() => _verifyError = 'Incorrect code, try again');
+      }
+    } finally {
+      if (mounted) setState(() => _verifying = false);
+    }
+  }
 
   Future<void> _pickImages() async {
     final picker = ImagePicker();
@@ -75,8 +155,9 @@ class _AddListingScreenState extends State<AddListingScreen> {
         sellerId: user?.uid ?? '',
         sellerContact: _contact.text.trim(),
         createdAt: DateTime.now(),
+        isVerified: _isVerified,
       );
-      await ListingService().addListing(listing);
+      await ListingService().setListing(_listingId, listing);
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
@@ -189,6 +270,79 @@ class _AddListingScreenState extends State<AddListingScreen> {
               decoration: const InputDecoration(
                   labelText: 'Play Store / App Store Link', border: OutlineInputBorder()),
             ),
+            const SizedBox(height: 8),
+            if (_isVerified)
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.green.shade200),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.verified, color: Colors.green, size: 18),
+                    SizedBox(width: 8),
+                    Text('Ownership verified', style: TextStyle(color: Colors.green)),
+                  ],
+                ),
+              )
+            else if (!_codeSent)
+              OutlinedButton.icon(
+                onPressed: _verifying ? null : _startVerification,
+                icon: _verifying
+                    ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.verified_outlined, size: 18),
+                label: const Text('Verify Ownership'),
+              )
+            else
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'We sent a 6-digit code to ${_maskEmail(_foundEmail ?? '')} '
+                      '(your app\'s Play Store developer email). Enter it below:',
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _codeController,
+                            keyboardType: TextInputType.number,
+                            maxLength: 6,
+                            decoration: const InputDecoration(
+                              hintText: '6-digit code',
+                              border: OutlineInputBorder(),
+                              counterText: '',
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton(
+                          onPressed: _verifying ? null : _submitCode,
+                          child: _verifying
+                              ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                              : const Text('Submit'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            if (_verifyError != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(_verifyError!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+              ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _techStack,

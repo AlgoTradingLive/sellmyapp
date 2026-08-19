@@ -5,6 +5,10 @@ class ListingService {
   final CollectionReference _listings =
       FirebaseFirestore.instance.collection('listings');
 
+  // Generate a new listing id upfront (used so verification can be tied
+  // to the listing before it's actually saved)
+  String newListingId() => _listings.doc().id;
+
   // Get all listings (newest first)
   Stream<List<AppListing>> getListings({String? category}) {
     Query query = _listings.orderBy('createdAt', descending: true);
@@ -29,7 +33,12 @@ class ListingService {
             .toList());
   }
 
-  // Add a new listing
+  // Add a new listing with a specific id
+  Future<void> setListing(String id, AppListing listing) async {
+    await _listings.doc(id).set(listing.toMap());
+  }
+
+  // Add a new listing (auto id)
   Future<void> addListing(AppListing listing) async {
     await _listings.add(listing.toMap());
   }
