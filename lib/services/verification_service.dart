@@ -12,9 +12,9 @@ import 'package:http/http.dart' as http;
 class VerificationService {
   // TODO: fill these in after creating your free EmailJS account
   // (see README section "EmailJS Setup")
-  static const String emailJsServiceId = 'YOUR_EMAILJS_SERVICE_ID';
-  static const String emailJsTemplateId = 'YOUR_EMAILJS_TEMPLATE_ID';
-  static const String emailJsPublicKey = 'YOUR_EMAILJS_PUBLIC_KEY';
+  static const String emailJsServiceId = 'service_kyr4qlq';
+  static const String emailJsTemplateId = 'template_cm0rfsc';
+  static const String emailJsPublicKey = 'rzUKRvzE-GuKC-B05';
 
   final _db = FirebaseFirestore.instance;
 
