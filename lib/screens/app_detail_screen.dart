@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/app_listing.dart';
+import '../services/chat_service.dart';
+import '../services/auth_service.dart';
+import 'chat_screen.dart';
 
 class AppDetailScreen extends StatelessWidget {
   final AppListing listing;
@@ -10,6 +13,28 @@ class AppDetailScreen extends StatelessWidget {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _messageSeller(BuildContext context) async {
+    final myId = AuthService().currentUser?.uid;
+    if (myId == null) return;
+    final conversationId = await ChatService().startConversation(
+      listingId: listing.id,
+      listingTitle: listing.title,
+      buyerId: myId,
+      sellerId: listing.sellerId,
+    );
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ChatScreen(
+            conversationId: conversationId,
+            listingTitle: listing.title,
+          ),
+        ),
+      );
     }
   }
 
@@ -101,9 +126,29 @@ class AppDetailScreen extends StatelessWidget {
                 label: const Text('View on Play Store / App Store'),
               ),
             const SizedBox(height: 24),
+            if (listing.sellerId != AuthService().currentUser?.uid)
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _messageSeller(context),
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  label: const Text('Message Seller'),
+                ),
+              )
+            else
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text('This is your own listing',
+                    style: TextStyle(color: Colors.grey)),
+              ),
+            const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
-              child: FilledButton.icon(
+              child: OutlinedButton.icon(
                 onPressed: () => _launch('https://wa.me/${listing.sellerContact}'),
                 icon: const Icon(Icons.chat),
                 label: const Text('Contact Seller on WhatsApp'),

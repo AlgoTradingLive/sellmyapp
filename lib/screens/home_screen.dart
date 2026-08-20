@@ -6,6 +6,8 @@ import 'app_detail_screen.dart';
 import 'add_listing_screen.dart';
 import 'my_listings_screen.dart';
 
+import '../screens/my_chats_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -184,6 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('SellMyApp'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.chat_bubble_outline),
+            tooltip: 'My Chats',
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const MyChatsScreen())),
+          ),
           IconButton(
             icon: const Icon(Icons.list_alt),
             tooltip: 'My listings',
