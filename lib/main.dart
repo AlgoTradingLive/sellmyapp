@@ -17,13 +17,64 @@ class SellMyAppApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const brandRed = Color(0xFFB50101);
     return MaterialApp(
       title: 'SellMyApp',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFFB50101),
+        colorSchemeSeed: brandRed,
         useMaterial3: true,
         fontFamily: 'Roboto',
+        // Material 3 auto-generates a muted/pastel tonal palette from the
+        // seed color for containers, buttons, chips, etc. That looks washed
+        // out next to our logo, so force the vivid brand red directly on
+        // the widgets that show it most (buttons, selected chips, FAB).
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: brandRed,
+          brightness: Brightness.light,
+        ).copyWith(
+          primary: brandRed,
+          onPrimary: Colors.white,
+          secondary: brandRed,
+          onSecondary: Colors.white,
+        ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: brandRed,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: brandRed,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        chipTheme: ChipThemeData(
+          selectedColor: brandRed,
+          secondarySelectedColor: brandRed,
+          labelStyle: const TextStyle(color: Colors.black87),
+          side: BorderSide(color: Colors.grey.shade400),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: brandRed,
+          foregroundColor: Colors.white,
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: brandRed,
+            side: const BorderSide(color: brandRed),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: brandRed),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
+          elevation: 0,
+        ),
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: const AuthGate(),
     );
