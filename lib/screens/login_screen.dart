@@ -59,7 +59,10 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.storefront, size: 64, color: Color(0xFF2563EB)),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset('assets/images/logo.png', height: 84, width: 84, fit: BoxFit.cover),
+                ),
                 const SizedBox(height: 12),
                 const Text('SellMyApp',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),

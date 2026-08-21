@@ -184,7 +184,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SellMyApp'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.asset('assets/images/logo.png', height: 30, width: 30, fit: BoxFit.cover),
+            ),
+            const SizedBox(width: 8),
+            const Text('SellMyApp'),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.chat_bubble_outline),
