@@ -9,30 +9,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _auth = AuthService();
-  bool _isSignUp = false;
   bool _loading = false;
   String? _error;
-
-  Future<void> _submit() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-    try {
-      if (_isSignUp) {
-        await _auth.signUp(_emailController.text.trim(), _passwordController.text.trim());
-      } else {
-        await _auth.signIn(_emailController.text.trim(), _passwordController.text.trim());
-      }
-    } catch (e) {
-      setState(() => _error = e.toString());
-    } finally {
-      setState(() => _loading = false);
-    }
-  }
 
   Future<void> _submitGoogle() async {
     setState(() {
@@ -45,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -68,67 +47,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
                 const Text('Buy or sell ready-made apps',
                     style: TextStyle(color: Colors.grey)),
-                const SizedBox(height: 32),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 40),
                 if (_error != null)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(bottom: 16),
                     child: Text(_error!,
-                        style: const TextStyle(color: Colors.red, fontSize: 12)),
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                        textAlign: TextAlign.center),
                   ),
                 SizedBox(
                   width: double.infinity,
-                  child: FilledButton(
-                    onPressed: _loading ? null : _submit,
-                    child: _loading
+                  child: FilledButton.icon(
+                    onPressed: _loading ? null : _submitGoogle,
+                    icon: _loading
                         ? const SizedBox(
                             height: 18,
                             width: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2))
-                        : Text(_isSignUp ? 'Sign Up' : 'Login'),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => setState(() => _isSignUp = !_isSignUp),
-                  child: Text(_isSignUp
-                      ? 'Already have an account? Login'
-                      : "New here? Sign Up"),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    children: [
-                      Expanded(child: Divider()),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text('OR', style: TextStyle(color: Colors.grey)),
-                      ),
-                      Expanded(child: Divider()),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: _loading ? null : _submitGoogle,
-                    icon: const Icon(Icons.g_mobiledata, size: 28),
-                    label: const Text('Continue with Google'),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.g_mobiledata, size: 28),
+                    label: Text(_loading ? 'Signing in...' : 'Continue with Google'),
                   ),
                 ),
               ],

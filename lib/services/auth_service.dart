@@ -8,17 +8,6 @@ class AuthService {
   User? get currentUser => _auth.currentUser;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  // Email + Password sign up
-  Future<UserCredential> signUp(String email, String password) {
-    return _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-  }
-
-  // Email + Password login
-  Future<UserCredential> signIn(String email, String password) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
-  }
-
   // Google sign-in (works for both new signup and returning login automatically)
   Future<UserCredential?> signInWithGoogle() async {
     final googleUser = await _googleSignIn.signIn();
