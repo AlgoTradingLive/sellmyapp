@@ -72,6 +72,7 @@ class ChatService {
     required String listingTitle,
     required String buyerId,
     required String sellerId,
+    String? buyerName,
   }) async {
     final id = conversationId(listingId, buyerId);
     final ref = _db.collection('conversations').doc(id);
@@ -82,6 +83,7 @@ class ChatService {
         'listingTitle': listingTitle,
         'buyerId': buyerId,
         'sellerId': sellerId,
+        'buyerName': buyerName ?? 'Buyer',
         'participants': [buyerId, sellerId],
         'lastMessage': null,
         'lastMessageAt': FieldValue.serverTimestamp(),

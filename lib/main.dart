@@ -21,7 +21,7 @@ class SellMyAppApp extends StatelessWidget {
       title: 'SellMyApp',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF2563EB),
+        colorSchemeSeed: const Color(0xFFB50101),
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),

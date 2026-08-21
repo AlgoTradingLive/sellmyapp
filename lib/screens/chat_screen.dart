@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.72),
                         decoration: BoxDecoration(
-                          color: isMe ? const Color(0xFF2563EB) : Colors.grey.shade200,
+                          color: isMe ? const Color(0xFFB50101) : Colors.grey.shade200,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Text(

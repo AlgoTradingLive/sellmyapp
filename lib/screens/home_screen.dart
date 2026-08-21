@@ -344,15 +344,15 @@ class _ListingCard extends StatelessWidget {
                         errorBuilder: (context, error, stack) => Container(
                           width: 56,
                           height: 56,
-                          color: Colors.blue.shade50,
-                          child: const Icon(Icons.apps, color: Color(0xFF2563EB)),
+                          color: Colors.red.shade50,
+                          child: const Icon(Icons.apps, color: Color(0xFFB50101)),
                         ),
                       )
                     : Container(
                         width: 56,
                         height: 56,
-                        color: Colors.blue.shade50,
-                        child: const Icon(Icons.apps, color: Color(0xFF2563EB)),
+                        color: Colors.red.shade50,
+                        child: const Icon(Icons.apps, color: Color(0xFFB50101)),
                       ),
               ),
               const SizedBox(width: 12),
@@ -367,7 +367,7 @@ class _ListingCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text('₹${listing.price.toStringAsFixed(0)}',
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                            fontWeight: FontWeight.bold, color: Color(0xFFB50101))),
                   ],
                 ),
               ),

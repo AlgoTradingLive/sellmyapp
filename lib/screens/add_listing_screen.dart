@@ -299,7 +299,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: Colors.red.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(

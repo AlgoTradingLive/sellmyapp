@@ -97,7 +97,7 @@ class AppDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text('₹${listing.price.toStringAsFixed(0)}',
                 style: const TextStyle(
-                    fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                    fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFB50101))),
             const SizedBox(height: 16),
             const Text('Description', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),

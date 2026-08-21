@@ -29,10 +29,10 @@ class MyChatsScreen extends StatelessWidget {
               final c = chats[i];
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.blue.shade50,
+                  backgroundColor: Colors.red.shade50,
                   child: Icon(
                     c.otherUserLabel == 'Seller' ? Icons.storefront : Icons.person,
-                    color: const Color(0xFF2563EB),
+                    color: const Color(0xFFB50101),
                   ),
                 ),
                 title: Text(c.listingTitle, maxLines: 1, overflow: TextOverflow.ellipsis),
