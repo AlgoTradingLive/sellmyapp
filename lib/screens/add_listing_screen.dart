@@ -29,6 +29,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
 
   String _category = 'Utility';
   String _platform = 'Android';
+  String _currency = 'INR';
   bool _saving = false;
   final List<File> _selectedImages = [];
   late final String _listingId;
@@ -147,6 +148,7 @@ class _AddListingScreenState extends State<AddListingScreen> {
         platform: _platform,
         description: _description.text.trim(),
         price: double.tryParse(_price.text.trim()) ?? 0,
+        currency: _currency,
         storeLink: _storeLink.text.trim().isEmpty ? null : _storeLink.text.trim(),
         monthlyDownloads: int.tryParse(_downloads.text.trim()),
         monthlyRevenue: double.tryParse(_revenue.text.trim()),
@@ -258,11 +260,31 @@ class _AddListingScreenState extends State<AddListingScreen> {
               validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
             const SizedBox(height: 12),
-            TextFormField(
-              controller: _price,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Price (₹)', border: OutlineInputBorder()),
-              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    controller: _price,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
+                    validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _currency,
+                    decoration: const InputDecoration(labelText: 'Currency', border: OutlineInputBorder()),
+                    items: const [
+                      DropdownMenuItem(value: 'INR', child: Text('₹ INR')),
+                      DropdownMenuItem(value: 'USD', child: Text('\$ USD')),
+                    ],
+                    onChanged: (v) => setState(() => _currency = v ?? 'INR'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             TextFormField(

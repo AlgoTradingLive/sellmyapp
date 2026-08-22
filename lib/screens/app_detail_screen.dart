@@ -4,6 +4,7 @@ import '../models/app_listing.dart';
 import '../services/chat_service.dart';
 import '../services/auth_service.dart';
 import 'chat_screen.dart';
+import '../utils/format.dart';
 
 class AppDetailScreen extends StatelessWidget {
   final AppListing listing;
@@ -95,7 +96,7 @@ class AppDetailScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Text('₹${listing.price.toStringAsFixed(0)}',
+            Text(formatPrice(listing.price, listing.currency),
                 style: const TextStyle(
                     fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFB50101))),
             const SizedBox(height: 16),
@@ -113,7 +114,7 @@ class AppDetailScreen extends StatelessWidget {
                       if (listing.monthlyDownloads != null)
                         _Stat(label: 'Monthly Downloads', value: '${listing.monthlyDownloads}'),
                       if (listing.monthlyRevenue != null)
-                        _Stat(label: 'Monthly Revenue', value: '₹${listing.monthlyRevenue}'),
+                        _Stat(label: 'Monthly Revenue', value: formatPrice(listing.monthlyRevenue!, listing.currency)),
                     ],
                   ),
                 ),

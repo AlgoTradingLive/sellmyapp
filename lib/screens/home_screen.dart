@@ -7,6 +7,7 @@ import 'add_listing_screen.dart';
 import 'my_listings_screen.dart';
 
 import '../screens/my_chats_screen.dart';
+import '../utils/format.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const Text('Filter & Sort', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 16),
-                  const Text('Price Range (₹)'),
+                  const Text('Price Range'),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -112,9 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Wrap(
                     spacing: 8,
                     children: ['Any', 'Android', 'iOS', 'Both'].map((p) {
+                      final sel = (platform ?? 'Any') == p;
                       return ChoiceChip(
-                        label: Text(p),
-                        selected: (platform ?? 'Any') == p,
+                        label: Text(p, style: TextStyle(color: sel ? Colors.white : Colors.black87)),
+                        selected: sel,
                         onSelected: (_) => setSheetState(() => platform = p),
                       );
                     }).toList(),
@@ -130,9 +132,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       MapEntry('price_high', 'Price: High to Low'),
                       MapEntry('downloads', 'Downloads'),
                     ].map((e) {
+                      final sel = sortBy == e.key;
                       return ChoiceChip(
-                        label: Text(e.value),
-                        selected: sortBy == e.key,
+                        label: Text(e.value, style: TextStyle(color: sel ? Colors.white : Colors.black87)),
+                        selected: sel,
                         onSelected: (_) => setSheetState(() => sortBy = e.key),
                       );
                     }).toList(),
@@ -234,7 +237,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: ChoiceChip(
-                    label: Text(cat),
+                    label: Text(
+                      cat,
+                      style: TextStyle(
+                        color: selected ? Colors.white : Colors.black87,
+                      ),
+                    ),
                     selected: selected,
                     onSelected: (_) => setState(() => _selectedCategory = cat),
                   ),
@@ -365,7 +373,7 @@ class _ListingCard extends StatelessWidget {
                     Text('${listing.category} • ${listing.platform}',
                         style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
                     const SizedBox(height: 4),
-                    Text('₹${listing.price.toStringAsFixed(0)}',
+                    Text(formatPrice(listing.price, listing.currency),
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Color(0xFFB50101))),
                   ],

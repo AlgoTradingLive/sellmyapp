@@ -5,6 +5,7 @@ class AppListing {
   final String platform; // Android / iOS / Both
   final String description;
   final double price;
+  final String currency; // INR or USD
   final String? storeLink; // Play Store / App Store link
   final int? monthlyDownloads;
   final double? monthlyRevenue;
@@ -22,6 +23,7 @@ class AppListing {
     required this.platform,
     required this.description,
     required this.price,
+    this.currency = 'INR',
     this.storeLink,
     this.monthlyDownloads,
     this.monthlyRevenue,
@@ -41,6 +43,7 @@ class AppListing {
       platform: map['platform'] ?? '',
       description: map['description'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
+      currency: map['currency'] ?? 'INR',
       storeLink: map['storeLink'],
       monthlyDownloads: map['monthlyDownloads'],
       monthlyRevenue: (map['monthlyRevenue'] as num?)?.toDouble(),
@@ -60,6 +63,7 @@ class AppListing {
       'platform': platform,
       'description': description,
       'price': price,
+      'currency': currency,
       'storeLink': storeLink,
       'monthlyDownloads': monthlyDownloads,
       'monthlyRevenue': monthlyRevenue,
