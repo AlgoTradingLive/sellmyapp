@@ -69,10 +69,16 @@ class SellMyAppApp extends StatelessWidget {
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(foregroundColor: brandRed),
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black87,
+        appBarTheme: AppBarTheme(
+          backgroundColor: brandRed,
+          foregroundColor: Colors.white,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         scaffoldBackgroundColor: Colors.white,
       ),
